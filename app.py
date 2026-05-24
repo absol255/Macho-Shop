@@ -607,7 +607,7 @@ def update_stocks_randomly():
 
             
 try:
-    threading.Thread(target=update_stocks_randomly, daemon=True).start()
-    init_db()
+    threading.Thread(target=init_db, daemon=True).start()
+    update_stocks_randomly
 except Exception:
     pass
