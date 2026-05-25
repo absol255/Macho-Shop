@@ -9,7 +9,7 @@ from flask import (
 )
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import Config
-from models import db, Stock, StockPrice, StockAdmin, User, Holding
+from models import db, User, Admin
 from decimal import Decimal
 import os
 import time
@@ -69,9 +69,9 @@ def maybe_bootstrap_admin():
     if not user or not password:
         return
     try:
-        if StockAdmin.query.count() > 0:
+        if Admin.query.count() > 0:
             return
-        admin = StockAdmin(username=user.strip()[:64])
+        admin = Admin(username=user.strip()[:64])
         admin.set_password(password)
         db.session.add(admin)
         db.session.commit()
@@ -84,7 +84,7 @@ def maybe_bootstrap_admin():
 @login_manager.user_loader
 def load_user(user_id):
     try:
-        return db.session.get(StockAdmin, int(user_id))
+        return db.session.get(Admin, int(user_id))
     except (TypeError, ValueError):
         return None
 
@@ -101,20 +101,6 @@ def get_portfolio_user():
     if not user_id:
         return None
     return db.session.get(User, user_id)
-
-
-def record_price(stock, value):
-    value = Decimal(str(value)).quantize(Decimal("0.01"))
-
-    stock.value = value
-    db.session.add(
-        StockPrice(stock_id=stock.id, value=value)
-    )
-
-
-# -----------------------
-# PAGES
-# -----------------------
 
 @app.route("/")
 def index():
@@ -154,7 +140,7 @@ def api_health():
         db.session.execute(db.text("SELECT 1"))
         table_err = ensure_tables()
         maybe_bootstrap_admin()
-        admin_count = StockAdmin.query.count()
+        admin_count = Admin.query.count()
         payload = {
             "ok": table_err is None,
             "db": True,
@@ -196,7 +182,7 @@ def api_login():
         return jsonify({"error": "Username and password required"}), 400
 
     try:
-        admin = StockAdmin.query.filter_by(username=username).first()
+        admin = Admin.query.filter_by(username=username).first()
     except Exception as exc:
         app.logger.exception("login database error")
         return jsonify({"error": "Database error: " + str(exc)}), 503
@@ -224,10 +210,10 @@ def api_login():
 def create_admin(username, password):
     """Create a stock admin (run once): flask create-admin user pass"""
     init_db()
-    if StockAdmin.query.filter_by(username=username).first():
+    if Admin.query.filter_by(username=username).first():
         click.echo("Admin already exists.")
         return
-    admin = StockAdmin(username=username)
+    admin = Admin(username=username)
     admin.set_password(password)
     db.session.add(admin)
     db.session.commit()
