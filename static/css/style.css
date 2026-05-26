@@ -62,5 +62,5 @@ input {
     border-radius: 16px;
     padding: 20px;
     backdrop-filter: blur(8px);
-    display: inline;
+    display: inline-block;
 }
