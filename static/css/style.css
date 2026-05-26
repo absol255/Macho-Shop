@@ -66,3 +66,8 @@ input {
     margin-left: 5px;
     margin-right: 5px;
 }
+
+.images {
+    max-width: 323px;
+    max-height: 265px;
+}
