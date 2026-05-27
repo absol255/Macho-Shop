@@ -49,6 +49,45 @@ class User(db.Model):
             "bank_account_number": self.bank_account_number,
         }
 
+class Item(db.Model):
+    __tablename__ = "items"
+
+    id = db.Column(db.BigInteger, primary_key=True)
+
+    username = db.Column(
+        db.String(64),
+        unique=True,
+        nullable=False,
+        index=True,
+    )
+
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow,
+    )
+
+    bank_account_number = db.Column(
+        db.BigInteger,
+        default=999,
+    )
+
+    item = db.Column(
+        db.String(64),
+        nullable=False
+    )
+
+    quantity = db.Column(
+        db.BigInteger,
+        nullable=False
+    )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "username": self.username,
+            "bank_account_number": self.bank_account_number,
+            "items": self.items
+        }
 
 class Admin(UserMixin, db.Model):
     __tablename__ = "admins"

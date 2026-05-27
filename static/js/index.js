@@ -14,7 +14,7 @@
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({bank: bank, amount: amount || 0 }),
+            body: JSON.stringify({bank: bank, amount: amount, item: "flag", item_cost: 7 || 0 }),
         })
             .then(async function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
             .then(function (res) {
@@ -33,7 +33,7 @@
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({bank: bank, amount: amount || 0 }),
+            body: JSON.stringify({bank: bank, amount: amount, item: "badge", item_cost: 3 || 0 }),
         })
             .then(async function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
             .then(function (res) {

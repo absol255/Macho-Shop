@@ -9,7 +9,7 @@ from flask import (
 )
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from config import Config
-from models import db, User, Admin
+from models import db, User, Admin, Item
 from decimal import Decimal
 import os
 import time
@@ -203,6 +203,35 @@ def api_login():
     login_user(admin)
     return jsonify({"success": True, "username": admin.username})
 
+@app.route("/api/buy", methods=["POST"])
+def api_buy():
+    data = request.json()
+
+    bank = data.get("bank")
+    amount = int(data.get("amount"))
+    item = data.get("item")
+    item_cost = int(data.get("item_cost"))
+
+    user = User.query.filter_by(bank_account_number=bank).first()
+    if not user:
+        return jsonify({"error": "Invalid bank account number"}), 401
+    
+    cost = item_cost * amount
+
+    if user.macho_bucks < cost:
+        return jsonify({"error": "Not enough macho bucks"}), 402
+
+    itemer = Item.query.filter_by(bank_account_number=bank, item=item).first()
+
+    if not itemer:
+        itemer = Item(username=user.username, bank_account_number=user.bank_account_number, item=item, quantity=0)
+        db.session.add(itemer)
+        db.session.flush()
+
+    user.macho_bucks -= cost
+    itemer.quantity += amount
+    db.session.commit()
+    return jsonify({"success": True, "new_balance": user.macho_bucks})
 
 @app.cli.command("create-admin")
 @click.argument("username")
