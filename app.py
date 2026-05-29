@@ -221,6 +221,9 @@ def api_buy():
     if user.macho_bucks < cost:
         return jsonify({"error": "Not enough macho bucks"}), 402
 
+    if amount <= 0:
+        return jsonify({"error": "Invalid quantity"}, 400)
+
     itemer = Item.query.filter_by(bank_account_number=bank, item=item).first()
 
     if not itemer:
@@ -231,7 +234,7 @@ def api_buy():
     user.macho_bucks -= cost
     itemer.quantity += amount
     db.session.commit()
-    return jsonify({"success": True, "new_balance": user.macho_bucks})
+    return jsonify(user.to_dict())
 
 @app.cli.command("create-admin")
 @click.argument("username")
