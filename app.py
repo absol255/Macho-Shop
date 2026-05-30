@@ -240,7 +240,7 @@ def api_buy():
 @click.argument("username")
 @click.argument("password")
 def create_admin(username, password):
-    """Create a stock admin (run once): flask create-admin user pass"""
+    """Create a admin (run once): flask create-admin user pass"""
     init_db()
     if Admin.query.filter_by(username=username).first():
         click.echo("Admin already exists.")
