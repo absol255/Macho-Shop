@@ -14,8 +14,6 @@ from decimal import Decimal
 import os
 import time
 import click
-import random
-import threading
 import json
 
 app = Flask(
