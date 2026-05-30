@@ -234,7 +234,7 @@ def api_buy():
     user.macho_bucks -= cost
     itemer.quantity += amount
     db.session.commit()
-    return jsonify(user.to_dict())
+    return jsonify(itemer.to_dict())
 
 @app.cli.command("create-admin")
 @click.argument("username")
