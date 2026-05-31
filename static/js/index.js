@@ -8,6 +8,12 @@
     const machoEraserBuy = document.getElementById("macho-eraser-buy");
     const machoEraserAmount = document.getElementById("macho-eraser-amount");
     const machoEraserBank = document.getElementById("macho-eraser-bank");
+    const machoPencilTopperBuy = document.getElementById("macho-penciltopper-buy");
+    const machoPencilTopperAmount = document.getElementById("macho-penciltopper-amount");
+    const machoPencilTopperBank = document.getElementById("macho-penciltopper-bank");
+    const macho3dPrintBuy = document.getElementById("macho-3dprint-buy");
+    const macho3dPrintAmount = document.getElementById("macho-3dprint-amount");
+    const macho3dPrintBank = document.getElementById("macho-3dprint-bank");
 
     machoFlagBuy.addEventListener('click', function () {
         const amount = parseInt(machoFlagAmount.value);
@@ -55,7 +61,7 @@
             method: "POST",
             credentials: "include",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({bank: bank, amount: amount, item: "eraser", item_cost: 0 || 0 }),
+            body: JSON.stringify({bank: bank, amount: amount, item: "eraser", item_cost: 5 || 0 }),
         })
             .then(async function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
             .then(function (res) {
@@ -64,6 +70,44 @@
                     return;
                 }
                 alert("Bought a macho pink eraser!")
+    })});
+
+    machoPencilTopperBuy.addEventListener('click', function () {
+        const amount = parseInt(machoPencilTopperAmount.value);
+        const bank = parseInt(machoPencilTopperBank.value);
+
+        fetch("/api/buy", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({bank: bank, amount: amount, item: "penciltopper", item_cost: 10 || 0 }),
+        })
+            .then(async function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+            .then(function (res) {
+                if (!res.ok) {
+                    alert(res.d.error || "Could not buy a macho pencil topper");
+                    return;
+                }
+                alert("Bought a macho pencil topper!")
+    })});
+
+    macho3dPrintBuy.addEventListener('click', function () {
+        const amount = parseInt(macho3dPrintAmount.value);
+        const bank = parseInt(macho3dPrintBank.value);
+
+        fetch("/api/buy", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({bank: bank, amount: amount, item: "3dprint", item_cost: 15 || 0 }),
+        })
+            .then(async function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+            .then(function (res) {
+                if (!res.ok) {
+                    alert(res.d.error || "Could not buy a macho 3d print");
+                    return;
+                }
+                alert("Bought a macho 3d print!")
     })});
 
 })();
