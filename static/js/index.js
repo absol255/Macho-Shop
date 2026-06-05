@@ -23,6 +23,9 @@
     const machoPenBuy = document.getElementById("macho-pen-buy");
     const machoPenAmount = document.getElementById("macho-pen-amount");
     const machoPenBank = document.getElementById("macho-pen-bank");
+    const machoJumboPackBuy = document.getElementById("macho-jumbopack-buy");
+    const machoJumboPackAmount = document.getElementById("macho-jumbopack-amount");
+    const machoJumboPackBank = document.getElementById("macho-jumbopack-bank");
 
     machoFlagBuy.addEventListener('click', function () {
         const amount = parseInt(machoFlagAmount.value);
@@ -174,6 +177,25 @@
                     return;
                 }
                 alert("Bought a macho pen!")
+    })});
+
+    machoJumboPackBuy.addEventListener('click', function () {
+        const amount = parseInt(machoJumboPackAmount.value);
+        const bank = parseInt(machoJumboPackBank.value);
+
+        fetch("/api/buy", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({bank: bank, amount: amount, item: "jumbopack", item_cost: 25 || 0 }),
+        })
+            .then(async function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+            .then(function (res) {
+                if (!res.ok) {
+                    alert(res.d.error || "Could not buy a macho jumbo pack");
+                    return;
+                }
+                alert("Bought a macho jumbo pack!")
     })});
 
 })();
