@@ -71,7 +71,12 @@ class Item(db.Model):
 
     quantity = db.Column(
         db.BigInteger,
-        nullable=False
+        nullable=False,
+        default=0
+    )
+
+    __table_args__ = (
+        db.UniqueConstraint("username", "item", name="uq_items_username_item"),
     )
 
     def to_dict(self):
@@ -79,7 +84,8 @@ class Item(db.Model):
             "id": self.id,
             "username": self.username,
             "bank_account_number": self.bank_account_number,
-            "items": self.items
+            "item": self.item,
+            "quantity": self.quantity
         }
 
 class Admin(UserMixin, db.Model):

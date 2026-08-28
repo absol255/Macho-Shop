@@ -203,29 +203,41 @@ def api_login():
 
 @app.route("/api/buy", methods=["POST"])
 def api_buy():
-    data = request.json
+    data = request.get_json(silent=True) or {}
 
     bank = data.get("bank")
-    amount = int(data.get("amount"))
     item = data.get("item")
-    item_cost = int(data.get("item_cost"))
+
+    try:
+        amount = int(data.get("amount"))
+        item_cost = int(data.get("item_cost"))
+    except (TypeError, ValueError):
+        return jsonify({"error": "amount and item_cost must be integers"}), 400
+
+    if amount <= 0:
+        return jsonify({"error": "Invalid quantity"}), 400
+
+    if not bank or not item:
+        return jsonify({"error": "bank and item are required"}), 400
 
     user = User.query.filter_by(bank_account_number=bank).first()
     if not user:
         return jsonify({"error": "Invalid bank account number"}), 401
-    
+
     cost = item_cost * amount
 
     if user.macho_bucks < cost:
         return jsonify({"error": "Not enough macho bucks"}), 402
 
-    if amount <= 0:
-        return jsonify({"error": "Invalid quantity"}, 400)
-
     itemer = Item.query.filter_by(bank_account_number=bank, item=item).first()
 
     if not itemer:
-        itemer = Item(username=user.username, bank_account_number=user.bank_account_number, item=item, quantity=0)
+        itemer = Item(
+            username=user.username,
+            bank_account_number=user.bank_account_number,
+            item=item,
+            quantity=0,
+        )
         db.session.add(itemer)
         db.session.flush()
 
