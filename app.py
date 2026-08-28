@@ -203,7 +203,7 @@ def api_login():
 
 @app.route("/api/buy", methods=["POST"])
 def api_buy():
-    data = request.json()
+    data = request.json
 
     bank = data.get("bank")
     amount = int(data.get("amount"))
